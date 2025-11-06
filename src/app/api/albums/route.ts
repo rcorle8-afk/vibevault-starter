@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 
+/**
+ * Minimal demo upload route:
+ * - Accepts multipart/form-data with "file" and optional "albumId"
+ * - Skips storage entirely and returns a stable placeholder image URL
+ */
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -10,11 +15,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // For prototype: skip storage; just echo a stable placeholder image
+    // Deterministic name so placeholder URL is stable for the same upload
     const fileName = `${albumId}/${Date.now()}-${file.name}`;
-    const placeholderUrl = `https://picsum.photos/seed/${encodeURIComponent(
-      fileName
-    )}/800/600`;
+
+    // Just return a placeholder image for now (no Supabase/S3)
+    const placeholderUrl = `https://picsum.photos/seed/${encodeURIComponent(fileName)}/800/600`;
 
     return NextResponse.json({ url: placeholderUrl, path: fileName });
   } catch (err) {
