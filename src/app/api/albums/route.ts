@@ -25,12 +25,7 @@ export async function POST(req: Request) {
 
     if (error) throw error;
 
-    // Get public URL
-    const { data: publicData } = supabase.storage
-      .from(process.env.SUPABASE_BUCKET!)
-      .getPublicUrl(fileName);
-
-    return NextResponse.json({ url: publicData.publicUrl });
+    
   } catch (err: any) {
     console.error(err);
 
