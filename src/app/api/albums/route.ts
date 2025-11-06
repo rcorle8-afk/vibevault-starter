@@ -2,14 +2,15 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const form = await req.formData();
-    const file = form.get("file") as File | null;
-    const albumId = (form.get("albumId") as string | null) ?? "default";
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
+    const albumId = (formData.get("albumId") as string | null) ?? "default";
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
+    // For prototype: skip storage; just echo a stable placeholder image
     const fileName = `${albumId}/${Date.now()}-${file.name}`;
     const placeholderUrl = `https://picsum.photos/seed/${encodeURIComponent(
       fileName
