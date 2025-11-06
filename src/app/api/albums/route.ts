@@ -34,7 +34,9 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error(err);
 
-return NextResponse.json({ url: publicData.publicUrl, path: fileName });
+const placeholderUrl = `https://picsum.photos/seed/${encodeURIComponent(fileName)}/800/600`;
+return NextResponse.json({ url: placeholderUrl, path: fileName });
+
 
   }
 }
