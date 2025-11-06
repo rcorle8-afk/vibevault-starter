@@ -1,24 +1,28 @@
 import NextAuth, { type AuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GitHubProvider from "next-auth/providers/github";
-import prisma from "@/lib/db/prisma"; // adjust this import if your prisma client path differs
+import type { Provider } from "next-auth/providers";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-// IMPORTANT: Do NOT use `as const` or `satisfies` here.
-// We want a mutable providers array (Provider[]), not a readonly tuple.
+// If you already have a prisma client helper, import that instead.
+const prisma = new PrismaClient();
+
+// IMPORTANT: providers must be mutable (Provider[]), NOT a readonly tuple.
+const providers: Provider[] = [
+  GitHubProvider({
+    clientId: process.env.GITHUB_ID ?? "",
+    clientSecret: process.env.GITHUB_SECRET ?? "",
+  }),
+];
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
-  providers: [
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-    }),
-  ],
-  session: {
-    strategy: "database",
-  },
+  providers,
+  session: { strategy: "database" },
   callbacks: {
-    // keep whatever callbacks you already had, or leave empty
-    // async session({ session, user }) { return session }
+    // keep or add any callbacks you had before
+    // async session({ session, user }) { return session; },
   },
 };
 
