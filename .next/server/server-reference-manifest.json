@@ -1,0 +1,22 @@
+{
+  "node": {
+    "eb9e37bef082fb539da8ea5ea4db435c080c8558": {
+      "workers": {
+        "app/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cryanc%5C%5CDesktop%5C%5Cvibevault-starter%5C%5Csrc%5C%5Capp%5C%5Cpage.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/page": "rsc"
+      }
+    },
+    "cc6ff6bd1a27169d285818d0166c978a5abb7636": {
+      "workers": {
+        "app/albums/[id]/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cryanc%5C%5CDesktop%5C%5Cvibevault-starter%5C%5Csrc%5C%5Capp%5C%5Calbums%5C%5C%5Bid%5D%5C%5Cpage.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/albums/[id]/page": "rsc"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "zHe5baCGROxaRDkHheC/9TIyxq+V/zfAFsFYVj6tVDs="
+}

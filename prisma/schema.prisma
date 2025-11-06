@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String       @id @default(cuid())
+  email     String       @unique
+  name      String?
+  createdAt DateTime     @default(now())
+  albums    Album[]      @relation("OwnerAlbums")
+  members   AlbumMember[]
+  photos    Photo[]      @relation("UserPhotos")
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model Album {
+  id           String        @id @default(cuid())
+  ownerId      String
+  owner        User          @relation("OwnerAlbums", fields: [ownerId], references: [id])
+  name         String
+  passwordHash String?       // MVP
+  createdAt    DateTime      @default(now())
+  members      AlbumMember[]
+  photos       Photo[]
+  invites      Invite[]
+  secret       AlbumSecret?
+}
+
+model AlbumMember {
+  id        String   @id @default(cuid())
+  albumId   String
+  userId    String
+  role      String   // 'owner' | 'editor' | 'viewer'
+  createdAt DateTime @default(now())
+  album     Album    @relation(fields: [albumId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  @@unique([albumId, userId])
+}
+
+model Photo {
+  id         String   @id @default(cuid())
+  albumId    String
+  uploaderId String
+  storageKey String
+  width      Int?
+  height     Int?
+  bytes      Int?
+  createdAt  DateTime @default(now())
+  album      Album    @relation(fields: [albumId], references: [id])
+  uploader   User     @relation("UserPhotos", fields: [uploaderId], references: [id])
+}
+
+model Invite {
+  id         String   @id @default(cuid())
+  albumId    String
+  code       String   @unique
+  expiresAt  DateTime?
+  maxUses    Int?
+  usedCount  Int      @default(0)
+  album      Album    @relation(fields: [albumId], references: [id])
+}
+
+model AlbumSecret {
+  albumId       String  @id
+  passwordSalt  String
+  keySalt       String
+  keyWrapAlgo   String
+  encryptedKey  Bytes
+  album         Album   @relation(fields: [albumId], references: [id])
+}
+
+/*** NextAuth tables ***/
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
